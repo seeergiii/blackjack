@@ -14,16 +14,15 @@ def hello():
 
 @app.post("/predict_move")
 def predict(input):
-    input_d = {'dealer': [7], 'player':[10,'A']}
-    activated = True
-    while activated:
-
-        player_cards = input_d['player']
-        dealer_card = SCORE_TABLE[input_d['dealer'][0]]
-        player_hand = Hand(player_cards)
-        print(player_hand.get_score())
-        print(player_hand.recommend(dealer_card))
-        if input('do you want to continue? (y/n)') == 'n':
-            break
-        if check_winner(player_hand, dealer_card):
-            activated = False
+    # input_d = {'dealer': [7], 'player':[10,'A']}
+    player_cards = input_d['player']
+    dealer_card = SCORE_TABLE[input_d['dealer'][0]]
+    player_hand = Hand(player_cards)
+    if player_hand.get_score() > 21:
+            rec = 'You busted!'
+    elif player_hand.is_blackjack():
+            rec = 'Blackjack'
+    else:
+        player_score = player_hand.get_score()
+        rec = player_hand.recommend(dealer_card)
+    return {'next_move': rec, 'player_hand': player_score, 'dealer_hand': dealer_card}
