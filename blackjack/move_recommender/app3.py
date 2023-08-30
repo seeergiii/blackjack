@@ -1,26 +1,31 @@
 from st_on_hover_tabs import on_hover_tabs
 import streamlit as st
-st.set_page_config(layout="wide")
+import requests
 
+#url = ''
+#data = requests.get(url).json()
+
+st.write(data)
+st.set_page_config(
+    page_title="Card Recognition",
+    page_icon=":hearts:",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 st.header("Custom tab component for on-hover navigation bar")
-st.markdown('<style>' + open('./style.css').read() + '</style>', unsafe_allow_html=True)
+
 
 
 with st.sidebar:
-    tabs = on_hover_tabs(tabName=['Dashboard', 'Money', 'Economy'],
-                         iconName=['dashboard', 'money', 'economy'], default_choice=0)
-
-if tabs =='Dashboard':
     st.title("Navigation Bar")
-    st.write('Name of option is {}'.format(tabs))
+    container = st.container()
+    container.write("Prediction")
+    #if st.button('Predict'):
+        #st.write(data['next_move'])
 
-elif tabs == 'Money':
-    st.title("Paper")
-    st.write('Name of option is {}'.format(tabs))
 
-elif tabs == 'Economy':
-    st.title("Tom")
-    st.write('Name of option is {}'.format(tabs))
+
+
 
 
 
@@ -28,12 +33,6 @@ import cv2
 
 from roboflow import Roboflow
 
-st.set_page_config(
-    page_title="Card Recognition",
-    page_icon=":hearts:",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
 
 rf = Roboflow(api_key="qL8RDeNa21Ax9cDpCue3")
 project = rf.workspace().project("playing-cards-ow27d")
@@ -68,28 +67,32 @@ def infer(img):
     # Draw boxes on the original frame
     for pred in prediction["predictions"]:
         x, y, width, height = pred["x"], pred["y"], pred["width"], pred["height"]
-        cv2.rectangle(img, (x, y), (x + width, y + height), (0, 255, 0), 2)
+        cv2.rectangle(img, (x, y), (x + width, y + height), (0, 255, 20), 9)
+        cv2.putText(img, data['player_hand'], (x,y), cv2.FONT_HERSHEY_COMPLEX, 1, 2)
 
     return img
 
 
 ROBOFLOW_SIZE = 416
+if st.button('Start'):
 
-while True:
-    ret, frame = video.read()
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    frame_with_boxes = infer(frame)
+    while True:
+        ret, frame = video.read()
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    height, width, channels = frame_with_boxes.shape
-    frame_with_boxes = cv2.resize(frame_with_boxes, (width * 2, height * 2))
+        frame_with_boxes = infer(frame)
 
-    frame_window.image(frame_with_boxes)
+        height, width, channels = frame_with_boxes.shape
+        frame_with_boxes = cv2.resize(frame_with_boxes, (width * 2, height * 2))
 
-    # Stop the loop if the 'q' key is pressed
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        break
+        frame_window.image(frame_with_boxes)
+
+        # Stop the loop if the 'q' key is pressed
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
 
 # Release resources when finished
-video.release()
-cv2.destroyAllWindows()
+    video.release()
+elif st.button('End'):
+    cv2.destroyAllWindows()

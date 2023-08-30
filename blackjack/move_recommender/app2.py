@@ -1,4 +1,4 @@
-import streamlit as st
+import app3 as st
 import cv2
 
 from roboflow import Roboflow
