@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 
+
 with open('requirements.txt', 'r') as file:
     lines = file.readlines()
 

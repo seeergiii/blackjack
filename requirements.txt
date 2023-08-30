@@ -5,3 +5,12 @@ matplotlib
 scikit-learn
 tensorflow
 scikit-learn
+
+
+# API
+fastapi         # API framework
+pytz            # time zone management
+uvicorn         # web server
+# tests
+httpx           # HTTP client
+pytest-asyncio
