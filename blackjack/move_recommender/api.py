@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from move_recommender.recommender import Hand, SCORE_TABLE
+from blackjack.move_recommender.recommender import Hand, SCORE_TABLE
 
 app = FastAPI()
 

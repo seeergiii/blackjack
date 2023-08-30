@@ -5,14 +5,14 @@ import requests
 #url = ''
 #data = requests.get(url).json()
 
-st.write(data)
+#st.write(data)
 st.set_page_config(
     page_title="Card Recognition",
     page_icon=":hearts:",
     layout="wide",
     initial_sidebar_state="expanded",
 )
-st.header("Custom tab component for on-hover navigation bar")
+st.header("Black Jack")
 
 
 
@@ -68,7 +68,7 @@ def infer(img):
     for pred in prediction["predictions"]:
         x, y, width, height = pred["x"], pred["y"], pred["width"], pred["height"]
         cv2.rectangle(img, (x, y), (x + width, y + height), (0, 255, 20), 9)
-        cv2.putText(img, data['player_hand'], (x,y), cv2.FONT_HERSHEY_COMPLEX, 1, 2)
+        cv2.putText(img, 'you won', (x,y), cv2.FONT_HERSHEY_COMPLEX, 1, 2)
 
     return img
 
