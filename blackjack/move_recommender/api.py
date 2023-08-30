@@ -1,9 +1,5 @@
 from fastapi import FastAPI
-<<<<<<< HEAD
-from blackjack.move_recommender.recommender import Hand, SCORE_TABLE
-=======
 from move_recommender.recommender import Hand, SCORE_TABLE
->>>>>>> 7b65096a0152ece4ffa2d5c4fb408f2d8ab05af0
 
 app = FastAPI()
 
@@ -14,19 +10,6 @@ def hello():
 
 
 @app.post("/predict_move")
-<<<<<<< HEAD
-def predict(input_d:dict = {'dealer': [], 'player':[]}):
-    # input_d = {'dealer': [7], 'player':[10,'A']}
-    player_cards = input_d['player']
-    dealer_card = SCORE_TABLE[input_d['dealer'][0]]
-    player_hand = Hand(player_cards)
-    player_score = player_hand.get_score()
-    if player_hand.get_score() > 21:
-            rec = 'You busted!'
-    elif player_hand.is_blackjack():
-            rec = 'Blackjack'
-    else:
-=======
 def predict(input):
     input_d = {'dealer': [7], 'player':[10,'A']}
     player_cards = input_d['player']
@@ -40,6 +23,5 @@ def predict(input):
 
     else:
         player_score = player_hand.get_score()
->>>>>>> 7b65096a0152ece4ffa2d5c4fb408f2d8ab05af0
         rec = player_hand.recommend(dealer_card)
     return {'next_move': rec, 'player_hand': player_score, 'dealer_hand': dealer_card}
