@@ -86,18 +86,7 @@ class Hand():
 
 
 
-def check_winner(player_hand, game_over=False):
-    if not game_over:
-        if player_hand.get_score() > 21:
-            print("You busted. Dealer wins! 😭")
-            return True
-        elif player_hand.is_blackjack():
-            print("You have blackjack! You win! 😄")
-            return True
 
-        return False
-
-    return False
 
 
 
