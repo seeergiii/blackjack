@@ -8,7 +8,7 @@ def hello():
     return{"response":"hellow"}
 
 
-@app.get("/predict_move")
+@app.post("/predict_move")
 def predict(input):
     input = {'dealer': [7], 'player':['A', 6]}
 
