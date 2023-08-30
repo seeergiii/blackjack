@@ -9,3 +9,6 @@ install_computer_vision:
 
 install_frontend:
 	@pip install -e ./blackjack/frontend
+
+run_api:
+	uvicorn blackjack.computer_vision.api:app --reload

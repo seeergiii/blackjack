@@ -1,5 +1,19 @@
+#standard
 numpy
 pandas
 seaborn
 matplotlib
 scikit-learn
+ipdb
+
+# Computer vision
+roboflow
+
+# Frontend
+streamlit
+
+# API
+fastapi
+pytz
+uvicorn
+python-multipart
