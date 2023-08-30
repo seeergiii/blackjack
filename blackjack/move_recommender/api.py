@@ -10,7 +10,7 @@ def hello():
 
 
 @app.post("/predict_move")
-def predict(input_d):
+def predict(input):
     input_d = {'dealer': [7], 'player':[10,'A']}
     player_cards = input_d['player']
     dealer_card = SCORE_TABLE[input_d['dealer'][0]]

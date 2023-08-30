@@ -23,12 +23,12 @@ DS = np.array([
     ['S'] + ['Ds']*4 + ['S']*2 + ['H']*3,
     ['S']*10
 ])
-HARD = pd.DataFrame(DH, index=[8, 9, 10, 11, 12, 13, 14,15, 16, 17], columns=(2,3,4,5,6,7,8,9,10,'A'))
-SOFT = pd.DataFrame(DS, index=[13, 14, 15, 16, 17, 18, 19], columns=(2,3,4,5,6,7,8,9,10,'A'))
+HARD = pd.DataFrame(DH, index=[8, 9, 10, 11, 12, 13, 14, 15, 16, 17], columns=(2,3,4,5,6,7,8,9,10,"A"))
+SOFT = pd.DataFrame(DS, index=[13, 14, 15, 16, 17, 18, 19], columns=(2,3,4,5,6,7,8,9,10,"A"))
 
 
 
-SCORE_TABLE = {'A':11, 'J':10, 'K':10, 'Q':10, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, 10:10}
+SCORE_TABLE = {"A":11, "J":10, "K":10, "Q":10, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, 10:10}
 
 
 
@@ -37,13 +37,13 @@ class Hand():
         self.state = state
         self.cards = cards
         self.score = score
-        if self.cards == ['A', 'A']:
+        if self.cards == ["A", "A"]:
             self.score = 12
 
         else:
             self.score = sum([SCORE_TABLE[i] for i in self.cards])
 
-        if 'A' in self.cards:
+        if "A" in self.cards:
             self.state = 'soft'
         else:
             self.state = 'hard'

@@ -1,6 +1,4 @@
-streamlit
-numpy
-pandas
+# API
 fastapi         # API framework
 pytz            # time zone management
 uvicorn         # web server
