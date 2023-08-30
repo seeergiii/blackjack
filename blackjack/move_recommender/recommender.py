@@ -52,12 +52,14 @@ class Hand():
 
 
 
+    def is_blackjack(self):
+        if self.score == 21:
+            return True
 
 
-
-    def recommend(self, dealer):                           # dealer is dealer hand 'J', 'K', 10, 8,...
-        if self.state == 'soft':
-            table = SOFT
+    def recommend(self, dealer):# dealer is dealer hand 'J', 'K', 10, 8,...
+        if self.state == 'hard':
+            table = HARD
             if self.score <= 8:
                 score = 8
             elif self.score >= 17:
@@ -65,7 +67,7 @@ class Hand():
             else:
                 score = self.score
         else:
-            table = HARD
+            table = SOFT
             if self.score <= 13:
                 score = 13
             elif self.score >= 19:
@@ -74,52 +76,49 @@ class Hand():
                 score = self.score
 
         response = table.loc[score,dealer]
+        print(score)
         return response
+
 
     def get_score(self):
         return self.score
 
 
-def is_blackjack(dealer_hand, player_hand):
-        if dealer_hand in [('A', 10), ('A', 'J'), ('A', 'K'), ('A', 'Q')] or player_hand in [('A', 10), ('A', 'J'), ('A', 'K'), ('A', 'Q')]:
-            return True
 
 
-def check_winner(self, player_hand, dearler_hand, game_over=False):
-        if player_hand.get_value() > 21:
+def check_winner(player_hand, game_over=False):
+    if not game_over:
+        if player_hand.get_score() > 21:
             print("You busted. Dealer wins! 😭")
-            return True
-        elif dealer_hand.get_value() > 21:
-            print("Dealer busted. You win! 😄")
-            return True
-        elif player_hand.is_blackjack() and dealer_hand.is_blackjack():
-            print("Both players have blackjack! Tie! 🤨")
             return True
         elif player_hand.is_blackjack():
             print("You have blackjack! You win! 😄")
             return True
-        elif dealer_hand.is_blackjack():
-            print("Dealer has blackjack! Dealer wins! 😭")
-            return True
-
-        return False
-
-
-
 
         return False
 
     return False
 
 
-def game():
-
-
 
 if __name__ == '__main__':
-    input_d = {'dealer': [7], 'player':['A', 6]}
+    input_d = {'dealer': [7], 'player':[10,'A']}
     activated = True
-    player_cards = input_d['player']
-    dealer_card = SCORE_TABLE[input_d['dealer'][0]]
-    player_hand = Hand(player_cards)
-    print(player_hand.recommend(dealer_card))
+    player_hand = None
+    while activated:
+
+        player_cards = input_d['player']
+        dealer_card = SCORE_TABLE[input_d['dealer'][0]]
+        player_hand = Hand(player_cards)
+        if player_hand.get_score() > 21:
+            print('You busted!')
+            activated = False
+        elif player_hand.is_blackjack():
+            print('Blackjack')
+            activated = False
+
+        else:
+            print(player_hand.recommend(dealer_card))
+
+        if input('do you want to continue? (y/n)') == 'n':
+            break
