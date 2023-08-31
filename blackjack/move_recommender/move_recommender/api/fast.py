@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from move_recommender.recommend.recommender import Hand, SCORE_TABLE
+from blackjack.move_recommender.recommender import Hand, SCORE_TABLE, check_winner, EX
+import re
 
 app = FastAPI()
 
@@ -10,17 +11,22 @@ def hello():
 
 
 @app.post("/predict_move")
-def predict(cards:dict):
-    player_cards = cards['player']
-    dealer_card = SCORE_TABLE[cards['dealer'][0]]
+def predict(input:dict = {'dealer': ['7H'], 'player':['10S','AD']}):
+    player_cards = [re.sub("[SCDH]", "", i) for i in input.get('player')]
+    dealer_cards = [re.sub("[SCDH]", "", i) for i in input.get('dealer')]
     player_hand = Hand(player_cards)
-    player_score = player_hand.get_score()
-    if player_hand.get_score() > 21:
-            rec = 'You busted!'
-
-    elif player_hand.is_blackjack():
-            rec = 'Blackjack'
-
+    dealer_hand = Hand(dealer_cards)
+    if len(dealer_cards) > 1:
+        message = check_winner(player_hand, dealer_hand)
+        return {'next_move': '', 'player_hand': '', 'dealer_hand': '', 'message': message}
     else:
-        rec = player_hand.recommend(dealer_card)
-    return {'next_move': rec, 'player_hand': player_score, 'dealer_hand': dealer_card}
+        player_score = player_hand.get_score()
+        if player_hand.get_score() > 21:
+                rec = 'You busted!'
+
+        elif player_hand.is_blackjack():
+                rec = 'Blackjack'
+
+        else:
+            rec = EX.get(player_hand.recommend(dealer_hand))
+        return {'next_move': rec, 'player_hand': player_score, 'dealer_hand': dealer_hand.get_score()}

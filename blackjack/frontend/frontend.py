@@ -11,6 +11,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+st.title("Black Jack :black_joker: :money_with_wings: :pizza: :whale:")
 
 st.title("Card Recognition")
 st.write("Using Roboflow API")
