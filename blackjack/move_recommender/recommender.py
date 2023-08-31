@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-
+import re
 DH = np.array([
     ['H']*10,
     ['H']+['Dh']*4 + ['H']*5,
@@ -28,7 +28,7 @@ SOFT = pd.DataFrame(DS, index=[13, 14, 15, 16, 17, 18, 19], columns=(2,3,4,5,6,7
 
 
 
-SCORE_TABLE = {"A":11, "J":10, "K":10, "Q":10, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, 10:10}
+SCORE_TABLE = {"A":11, "J":10, "K":10, "Q":10, "2":2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9, "10":10}
 
 EX = {'H': 'Hit', 'S': 'Stand', 'Dh': 'Double if allowed, otherwise hit', 'Ds': 'Double if allowed, otherwise stand', 'Rh': 'Surrender if allowed, otherwise hit'}
 
@@ -76,7 +76,7 @@ class Hand():
             else:
                 score = self.score
 
-        response = table.loc[score,dealer]
+        response = table.loc[score,dealer.get_score()]
         print(score)
         return response
 
@@ -87,28 +87,57 @@ class Hand():
 
 
 
+def check_winner(player_hand, dealer_hand):
+            if dealer_hand.get_score() > 21:
+
+                return "Dealer busted. You win! 😄"
+            elif player_hand.is_blackjack() and dealer_hand.is_blackjack():
+
+                return "Both players have blackjack! Tie! 🤨"
+
+            elif dealer_hand.is_blackjack():
+
+                return "Dealer has blackjack! Dealer wins! 😭"
+
+            elif player_hand.get_score()> dealer_hand.get_score() and player_hand.get_score() <= 21:
+                return "You win! 😄"
+            elif player_hand.get_score() == dealer_hand.get_score():
+                return "Tie! 🤨"
+            else:
+                return ""
+
+
 
 
 
 
 if __name__ == '__main__':
-    input_d = {'dealer': [10], 'player':[10,5]}
+    input_d= {'dealer': ['10C', '10H'], 'player': ['10D', '8S', '7H']}
     activated = True
     player_hand = None
     while activated:
 
-        player_cards = input_d['player']
-        dealer_card = SCORE_TABLE[input_d['dealer'][0]]
+        player_cards = [re.sub("[SCDH]", "", i) for i in input_d.get('player')]
+        dealer_cards = [re.sub("[SCDH]", "", i) for i in input_d.get('dealer')]
+        print(player_cards, dealer_cards)
+        print(len(dealer_cards))
         player_hand = Hand(player_cards)
-        if player_hand.get_score() > 21:
-            print('You busted!')
-            activated = False
-        elif player_hand.is_blackjack():
-            print('Blackjack')
-            activated = False
-
+        dealer_hand = Hand(dealer_cards)
+        if len(dealer_cards) > 1:
+            message = check_winner(player_hand, dealer_hand)
+            print(message)
         else:
-            print(EX.get(player_hand.recommend(dealer_card)))
+            player_score = player_hand.get_score()
+            if player_hand.get_score() > 21:
+                    rec = 'You busted!'
 
-        if input('do you want to continue? (y/n)') == 'n':
+            elif player_hand.is_blackjack():
+                    rec = 'Blackjack'
+
+            else:
+                rec = EX.get(player_hand.recommend(dealer_hand))
+            print(rec)
+
+
+        if input("do you want to continue? (y/n)") == "n":
             break

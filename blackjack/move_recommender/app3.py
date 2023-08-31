@@ -1,11 +1,15 @@
 from st_on_hover_tabs import on_hover_tabs
 import streamlit as st
 import requests
+import cv2
 
-#url = ''
-#data = requests.get(url).json()
+from roboflow import Roboflow
+import os
 
-#st.write(data)
+url = ''
+data = requests.get(url).json()
+
+
 st.set_page_config(
     page_title="Card Recognition",
     page_icon=":hearts:",
@@ -15,23 +19,15 @@ st.set_page_config(
 st.header("Black Jack")
 
 
+def main():
+    with st.sidebar:
+        st.title("Navigation Bar")
+        container = st.container()
+        container.write("Prediction")
+        if st.button('Predict'):
+            #st.write(f"Next move: {data['next_move']}")
+            st.write('next_move')
 
-with st.sidebar:
-    st.title("Navigation Bar")
-    container = st.container()
-    container.write("Prediction")
-    #if st.button('Predict'):
-        #st.write(data['next_move'])
-
-
-
-
-
-
-
-import cv2
-
-from roboflow import Roboflow
 
 
 rf = Roboflow(api_key="qL8RDeNa21Ax9cDpCue3")
@@ -46,7 +42,14 @@ frame_window = st.image([])
 video = cv2.VideoCapture(0)
 
 
-import os
+
+
+
+
+
+
+
+
 
 
 def infer(img):
