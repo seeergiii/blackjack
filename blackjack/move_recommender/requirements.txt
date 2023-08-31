@@ -5,3 +5,6 @@ uvicorn         # web server
 # tests
 httpx           # HTTP client
 pytest-asyncio
+#python
+numpy
+pandas

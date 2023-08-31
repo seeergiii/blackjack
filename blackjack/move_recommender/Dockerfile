@@ -1,9 +1,6 @@
-FROM python:3.10.6
+FROM python:3.10.6-buster
 COPY move_recommender /move_recommender
-COPY recommender.py /recommender.py
 COPY setup.py setup.py
-COPY requirements_prod.txt requirements.txt
-COPY api.py /api.py
-
-RUN pip install -r requirements.txt
+COPY requirements.txt requirements.txt
+RUN pip install -e .
 CMD uvicorn move_recommender.api.fast:app --host 0.0.0.0 --port $PORT
