@@ -30,6 +30,7 @@ SOFT = pd.DataFrame(DS, index=[13, 14, 15, 16, 17, 18, 19], columns=(2,3,4,5,6,7
 
 SCORE_TABLE = {"A":11, "J":10, "K":10, "Q":10, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, 10:10}
 
+EX = {'H': 'Hit', 'S': 'Stand', 'Dh': 'Double if allowed, otherwise hit', 'Ds': 'Double if allowed, otherwise stand', 'Rh': 'Surrender if allowed, otherwise hit'}
 
 
 class Hand():
@@ -91,7 +92,7 @@ class Hand():
 
 
 if __name__ == '__main__':
-    input_d = {'dealer': [7], 'player':[10,'A']}
+    input_d = {'dealer': [10], 'player':[10,5]}
     activated = True
     player_hand = None
     while activated:
@@ -107,7 +108,7 @@ if __name__ == '__main__':
             activated = False
 
         else:
-            print(player_hand.recommend(dealer_card))
+            print(EX.get(player_hand.recommend(dealer_card)))
 
         if input('do you want to continue? (y/n)') == 'n':
             break
