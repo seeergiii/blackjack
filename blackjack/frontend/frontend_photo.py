@@ -82,7 +82,7 @@ def main():
                         x, y, width, height = pred["x"], pred["y"], pred["width"], pred["height"]
                         cv2.rectangle(resized_img_rgb, (x, y), (x + width, y + height), (0, 255, 20), 9)
                         cv2.putText(resized_img_rgb, pred["class"], (x,y), cv2.FONT_HERSHEY_COMPLEX, 1, 2)
-                    st.image(img_rgb_, use_column_width=True,clamp = True)
+                    st.image(resized_img_rgb, use_column_width=True,clamp = True)
 
                     dealer_hands = []
                     player_hands = []
