@@ -71,20 +71,23 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
         metrics = self.metrics.result(force=True)
         logs.update(metrics)
 
-        current_map = metrics["MaP"]
+        current_map = metrics["APs"]  # set target metric as MAP on small boxes
 
-        self.best_map = current_map
-        self.model.save(self.save_path)
-        timestamp = time.strftime("%Y%m%d-%H%M")
+        # If the current model as better MAP on small boxes
+        if current_map > self.best_map:
+            self.best_map = current_map
+            self.model.save(self.save_path)
+            timestamp = time.strftime("%Y%m%d-%H%M")
 
-        # Create model path
-        model_path = os.path.join(
-            self.save_path, f"{timestamp}_model_weights_coco_checkpoint.h5"
-        )
+            # Create model path
+            model_path = os.path.join(
+                self.save_path,
+                f"{timestamp}_map_small_{current_map}_model_weights_coco_checkpoint.h5",
+            )
 
-        # Save model locally and to GCloud
-        self.model.save_weights(model_path)
-        print("✅ Model checkpoint saved successfully locally")
-        save_model_to_gcloud(model_path, BUCKET_NAME)
+            # Save model locally and to GCloud
+            self.model.save_weights(model_path)
+            print("✅ Model checkpoint saved successfully locally")
+            save_model_to_gcloud(model_path, BUCKET_NAME)
 
         return logs
