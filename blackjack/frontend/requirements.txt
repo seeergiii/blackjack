@@ -1,2 +1,10 @@
+opencv-python-headless==4.6.0.66
 streamlit
+streamlit_webrtc
+matplotlib
+PyYAML
 requests
+scipy
+# opencv-python-headless==4.5.1.48
+roboflow
+imutils
