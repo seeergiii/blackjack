@@ -24,10 +24,12 @@ RTC_CONFIGURATION = RTCConfiguration(
 )
 
 
-def get_coordinates_of_clusters(frame):
+def get_coordinates_of_clusters(
+    frame, canny_thresh1: float = 50, canny_thresh2: float = 150
+):
     image_greyscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     image_blurred = cv2.GaussianBlur(image_greyscale, (5, 5), 0)
-    image_canny_kernel = cv2.Canny(image_blurred, 50, 150)
+    image_canny_kernel = cv2.Canny(image_blurred, canny_thresh1, canny_thresh2)
     contours, _ = cv2.findContours(
         image_canny_kernel, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
     )
@@ -61,13 +63,25 @@ class VideoProcessor:
         self.dealer_midpoint = None  # Initialize the dealer's midpoint
         self.frame = None  # Initialize a frame
 
+        self.canny_thresh1 = 50
+        self.canny_thresh2 = 150
+        self.canny_image_stream = False
+
         self.frame_counter = 0  # Initialize the frame counter
 
     def recv(self, frame):
         self.frame_counter += 1
         img = frame.to_ndarray(format="bgr24")
 
-        coordinates = get_coordinates_of_clusters(img)
+        if self.canny_image_stream:
+            image_greyscale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            image_blurred = cv2.GaussianBlur(image_greyscale, (5, 5), 0)
+            img_canny = cv2.Canny(image_blurred, self.canny_thresh1, self.canny_thresh2)
+            img = cv2.cvtColor(img_canny, cv2.COLOR_GRAY2BGR)
+
+        coordinates = get_coordinates_of_clusters(
+            img, self.canny_thresh1, self.canny_thresh2
+        )
 
         # Sort coordinates based on area in descending order
         sorted_coordinates = sorted(
@@ -162,6 +176,32 @@ webrtc_ctx = webrtc_streamer(
     async_processing=False,
 )
 
+canny_thresh1 = st.slider(
+    "Set Canny Threshold 1 for cluster detection (Default: 50)", 0, 300, value=50
+)
+canny_thresh2 = st.slider(
+    "Set Canny Threshold 2 for cluster detection (Default: 150)", 0, 300, value=150
+)
+
+try:
+    if canny_thresh1:
+        webrtc_ctx.video_transformer.canny_thresh1 = canny_thresh1
+
+    if canny_thresh2:
+        webrtc_ctx.video_transformer.canny_thresh2 = canny_thresh2
+except:
+    pass
+
+
+canny_image_stream_global = st.toggle(
+    " ⬅️ This switch turns on canny edge detection in videostream factory"
+)
+
+try:
+    webrtc_ctx.video_transformer.canny_image_stream = canny_image_stream_global
+except:
+    pass
+
 st.markdown(
     """
 <style>
@@ -216,9 +256,14 @@ if button:
         else:
             player_cards.append(class_)
 
+    player_cards = list(set(player_cards))
+    dealer_cards = list(set(dealer_cards))
+
     st.sidebar.title("Player cards:")
 
-    for card in list(set(player_cards)):
+    player_cards_string = ""
+
+    for card in player_cards:
         emoji = (
             "♣️"
             if card[-1] == "C"
@@ -230,12 +275,15 @@ if button:
             if card[-1] == "D"
             else ""
         )
+        player_cards_string += " " + card[:-1] + emoji
 
-        st.sidebar.title(card[:-1] + emoji)
+    st.sidebar.title(player_cards_string)
 
     st.sidebar.title("Dealer cards:")
 
-    for card in list(set(dealer_cards)):
+    dealer_cards_string = ""
+
+    for card in dealer_cards:
         emoji = (
             "♣️"
             if card[-1] == "C"
@@ -247,11 +295,19 @@ if button:
             if card[-1] == "D"
             else ""
         )
+        dealer_cards_string += " " + card[:-1] + emoji
 
-        st.sidebar.title(card[:-1] + emoji)
+    st.sidebar.title(dealer_cards_string)
+
+    headers = {"accept": "application/json", "Content-Type": "application/json"}
+
+    data = {"dealer": dealer_cards, "player": player_cards}
 
     response = requests.post(
         "https://recommend-okumlrfyiq-ew.a.run.app/predict_move",
-        json={"dealer": dealer_cards, "player": player_cards},
+        headers=headers,
+        json=data,
     )
-    st.write(response.json)
+
+    st.sidebar.title("Recommended move:")
+    st.sidebar.title(response.json()["next_move"])
